@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>護理系一年甲班 班級網站 | Department of Nursing Class 1A</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Noto Sans TC -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        teal: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                        },
+                        medical: {
+                            blue: '#0284c7',
+                            light: '#e0f2fe',
+                            dark: '#0369a1'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans TC', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(229, 231, 235, 0.8);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #0d9488;
+            border-radius: 4px;
+        }
+        .calendar-day-active {
+            background-color: #ccfbf1;
+            border-color: #14b8a6;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col selection:bg-teal-500 selection:text-white">
+
+    <!-- Navigation Bar -->
+    <nav class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-teal-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('home')">
+                    <div class="w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center text-white shadow-md">
+                        <i class="fa-solid font-bold fa-user-nurse text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-bold bg-gradient-to-r from-teal-700 to-medical-blue bg-clip-text text-transparent">護理一甲</span>
+                        <span class="block text-xs text-slate-500 tracking-wider">NURSING CLASS 1A</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Nav Menu -->
+                <div class="hidden md:flex items-center space-x-1 lg:space-x-2">
+                    <button onclick="switchTab('home')" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium transition-colors text-teal-700 bg-teal-50" id="nav-home">
+                        <i class="fa-solid fa-house mr-1.5"></i>班級首頁
+                    </button>
+                    <button onclick="switchTab('members')" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium transition-colors text-slate-600 hover:text-teal-600 hover:bg-slate-100" id="nav-members">
+                        <i class="fa-solid fa-users mr-1.5"></i>班級成員
+                    </button>
+                    <button onclick="switchTab('calendar')" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium transition-colors text-slate-600 hover:text-teal-600 hover:bg-slate-100" id="nav-calendar">
+                        <i class="fa-solid fa-calendar-days mr-1.5"></i>班級行事曆
+                    </button>
+                    <button onclick="switchTab('activities')" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium transition-colors text-slate-600 hover:text-teal-600 hover:bg-slate-100" id="nav-activities">
+                        <i class="fa-solid fa-notes-medical mr-1.5"></i>系上與班級活動
+                    </button>
+                    <button onclick="switchTab('hub')" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium transition-colors text-slate-600 hover:text-teal-600 hover:bg-slate-100" id="nav-hub">
+                        <i class="fa-solid fa-heart-pulse mr-1.5"></i>留言板與護理小工具
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="p-2 rounded-lg text-slate-600 hover:text-teal-600 hover:bg-slate-100 focus:outline-none">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Nav Menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-b border-slate-200 bg-white px-4 pt-2 pb-4 space-y-2">
+            <button onclick="switchTab('home'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-base font-medium text-teal-700 bg-teal-50">
+                <i class="fa-solid fa-house mr-2"></i>班級首頁
+            </button>
+            <button onclick="switchTab('members'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-base font-medium text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-users mr-2"></i>班級成員
+            </button>
+            <button onclick="switchTab('calendar'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-base font-medium text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-calendar-days mr-2"></i>班級行事曆
+            </button>
+            <button onclick="switchTab('activities'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-base font-medium text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-notes-medical mr-2"></i>系上與班級活動
+            </button>
+            <button onclick="switchTab('hub'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-base font-medium text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-heart-pulse mr-2"></i>留言板與護理小工具
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- SECTION 1: HOME PAGE -->
+        <section id="section-home" class="space-y-8">
+            <!-- Hero Banner -->
+            <div class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-teal-800 via-teal-700 to-medical-dark text-white p-8 md:p-12 shadow-xl">
+                <div class="absolute -right-10 -bottom-10 opacity-10 text-white pointer-events-none">
+                    <i class="fa-solid fa-hand-holding-medical text-[280px]"></i>
+                </div>
+                <div class="relative z-10 max-w-2xl">
+                    <span class="inline-block px-3 py-1 bg-teal-500/30 backdrop-blur-md rounded-full text-teal-100 text-xs font-semibold tracking-wider mb-4 border border-teal-400/30">
+                        ✨ 歡迎來到護理系一年甲班官方網站
+                    </span>
+                    <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight mb-4 leading-tight">
+                        心懷慈愛，專業領航<br>護理一甲，光彩耀眼！
+                    </h1>
+                    <p class="text-teal-100 text-base md:text-lg mb-6 font-light leading-relaxed">
+                        我們是一群充滿熱情與抱負的護理新星。在這裡，我們攜手學習人體奧秘、護理照護與同理心，準備成為未來醫療照護最堅實的後盾。
+                    </p>
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="switchTab('members')" class="bg-white text-teal-800 font-bold px-5 py-2.5 rounded-xl hover:bg-teal-50 transition shadow-lg flex items-center">
+                            認識我們 <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
+                        </button>
+                        <button onclick="switchTab('calendar')" class="bg-teal-700/60 hover:bg-teal-700 border border-teal-400/40 text-white font-medium px-5 py-2.5 rounded-xl transition flex items-center">
+                            <i class="fa-regular fa-calendar mr-2"></i>檢視近期行事曆
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Class Motto & Values -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center text-center hover:shadow-md transition">
+                    <div class="w-12 h-12 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center text-xl font-bold mb-3">
+                        <i class="fa-solid fa-heart"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800">關懷 Care</h3>
+                    <p class="text-xs text-slate-500 mt-1">以人為本，感受病患溫度</p>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center text-center hover:shadow-md transition">
+                    <div class="w-12 h-12 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center text-xl font-bold mb-3">
+                        <i class="fa-solid fa-user-md"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800">專業 Expertise</h3>
+                    <p class="text-xs text-slate-500 mt-1">精益求精，掌握學理技能</p>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center text-center hover:shadow-md transition">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl font-bold mb-3">
+                        <i class="fa-solid fa-hands-holding-child"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800">利他 Altruism</h3>
+                    <p class="text-xs text-slate-500 mt-1">奉獻心力，溫暖社會角落</p>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center text-center hover:shadow-md transition">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-xl font-bold mb-3">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800">卓越 Excellence</h3>
+                    <p class="text-xs text-slate-500 mt-1">超越自我，追求護理新境</p>
+                </div>
+            </div>
+
+            <!-- Stats & Quick News Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Latest Announcements (2 cols) -->
+                <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+                    <div class="flex items-center justify-between mb-5">
+                        <h2 class="text-xl font-bold text-slate-800 flex items-center">
+                            <i class="fa-solid fa-bullhorn text-teal-600 mr-2.5"></i>班級最新公告
+                        </h2>
+                        <span class="text-xs bg-teal-100 text-teal-800 font-semibold px-2.5 py-1 rounded-full">即時 updates</span>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="p-4 rounded-xl bg-slate-50 hover:bg-teal-50/50 transition border border-slate-100">
+                            <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                                <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-semibold">重要提醒</span>
+                                <span>2026-10-05</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-base hover:text-teal-700 cursor-pointer">【提醒】CPR & AED 考照證照講習費用繳交與登錄</h4>
+                            <p class="text-sm text-slate-600 mt-1 line-clamp-2">請全班同學於本週五前向總務股長（陳美玲）繳交證照講習費用 $350 元，並至系網站上傳資料。</p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-slate-50 hover:bg-teal-50/50 transition border border-slate-100">
+                            <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                                <span class="px-2 py-0.5 rounded bg-teal-100 text-teal-800 font-semibold">活動宣導</span>
+                                <span>2026-10-02</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-base hover:text-teal-700 cursor-pointer">【系學會】解剖學實習防護衣尺寸統計調查</h4>
+                            <p class="text-sm text-slate-600 mt-1 line-clamp-2">下學期解剖學實驗課程需統一穿著防護衣，請各組組長填寫表單彙整組員尺寸。</p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-slate-50 hover:bg-teal-50/50 transition border border-slate-100">
+                            <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                                <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-semibold">學術考照</span>
+                                <span>2026-09-28</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-base hover:text-teal-700 cursor-pointer">【護理學導論】期中報告組別與題目公佈</h4>
+                            <p class="text-sm text-slate-600 mt-1 line-clamp-2">導師已將期中專題報告評分標準上傳至教學平台，請各組於下週研討課提出大綱。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Class Quick Stats & Officers (1 col) -->
+                <div class="space-y-6">
+                    <!-- Class Stats -->
+                    <div class="bg-gradient-to-br from-teal-700 to-teal-900 rounded-2xl p-6 text-white shadow-md">
+                        <h3 class="font-bold text-lg mb-4 text-teal-100 flex items-center">
+                            <i class="fa-solid fa-chart-pie mr-2"></i>一甲數據概覽
+                        </h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-white/10 backdrop-blur-md rounded-xl p-3 text-center border border-white/10">
+                                <span class="text-2xl font-black text-white">45</span>
+                                <span class="block text-xs text-teal-200 mt-0.5">班級總人數</span>
+                            </div>
+                            <div class="bg-white/10 backdrop-blur-md rounded-xl p-3 text-center border border-white/10">
+                                <span class="text-2xl font-black text-amber-300">6</span>
+                                <span class="block text-xs text-teal-200 mt-0.5">專題小組</span>
+                            </div>
+                            <div class="bg-white/10 backdrop-blur-md rounded-xl p-3 text-center border border-white/10">
+                                <span class="text-2xl font-black text-emerald-300">100%</span>
+                                <span class="block text-xs text-teal-200 mt-0.5">CPR 認證目標</span>
+                            </div>
+                            <div class="bg-white/10 backdrop-blur-md rounded-xl p-3 text-center border border-white/10">
+                                <span class="text-2xl font-black text-sky-300">8</span>
+                                <span class="block text-xs text-teal-200 mt-0.5">本學期大事</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Contacts Preview -->
+                    <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+                        <h3 class="font-bold text-slate-800 mb-3 flex items-center">
+                            <i class="fa-solid fa-address-book text-teal-600 mr-2"></i>重點聯絡窗口
+                        </h3>
+                        <ul class="space-y-3 text-sm text-slate-600">
+                            <li class="flex items-center justify-between pb-2 border-b border-slate-100">
+                                <span class="font-medium text-slate-800">班導師：林靜怡 教授</span>
+                                <a href="mailto:jy_lin@nursing.edu.tw" class="text-teal-600 hover:underline"><i class="fa-solid fa-envelope"></i></a>
+                            </li>
+                            <li class="flex items-center justify-between pb-2 border-b border-slate-100">
+                                <span class="font-medium text-slate-800">班長：張家豪</span>
+                                <span class="text-xs text-slate-500">0912-345-678</span>
+                            </li>
+                            <li class="flex items-center justify-between">
+                                <span class="font-medium text-slate-800">副班長：李欣潔</span>
+                                <span class="text-xs text-slate-500">0923-456-789</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: CLASS MEMBERS & OFFICERS -->
+        <section id="section-members" class="hidden space-y-8">
+            <!-- Section Title -->
+            <div class="border-l-4 border-teal-600 pl-4">
+                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800">班級成員介紹</h2>
+                <p class="text-slate-500 text-sm mt-1">凝聚專業、溫暖與關懷的護理一甲大家庭</p>
+            </div>
+
+            <!-- Mentor Section -->
+            <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-100 shadow-sm">
+                <div class="flex flex-col md:flex-row items-center gap-6">
+                    <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=300" alt="班導師" class="w-32 h-32 md:w-40 md:h-40 rounded-2xl object-cover shadow-md border-2 border-teal-500">
+                    <div class="space-y-2 text-center md:text-left flex-1">
+                        <div class="inline-block px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-xs font-semibold">
+                            班導師專區 Teacher's Corner
+                        </div>
+                        <h3 class="text-2xl font-bold text-slate-800">林靜怡 教授 <span class="text-sm font-normal text-slate-500">(Ph.D., RN)</span></h3>
+                        <p class="text-teal-700 font-medium text-sm">研究專長：成人護理學、重症照護、護理倫理與溝通</p>
+                        <p class="text-slate-600 text-sm leading-relaxed pt-2 border-t border-slate-100 italic">
+                            「護理不僅是一門科學，更是一門充滿溫度的藝術。希望護一甲的每一位同學，在大學四年中不只收穫專業知識，更能培養出堅韌與溫暖的同理心，彼此扶持成長！」
+                        </p>
+                        <div class="pt-2 text-xs text-slate-500 flex flex-wrap gap-4 justify-center md:justify-start">
+                            <span><i class="fa-solid fa-envelope text-teal-600 mr-1"></i> jylin@university.edu.tw</span>
+                            <span><i class="fa-solid fa-building text-teal-600 mr-1"></i> 護理大樓 405 辦公室</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Class Officers Grid -->
+            <div>
+                <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center">
+                    <i class="fa-solid fa-user-shield text-teal-600 mr-2"></i>班幹部團隊
+                </h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4" id="officers-container">
+                    <!-- Officers loaded dynamically JS -->
+                </div>
+            </div>
+
+            <!-- All Class Members -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm space-y-6">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                    <h3 class="text-xl font-bold text-slate-800 flex items-center">
+                        <i class="fa-solid fa-users text-teal-600 mr-2"></i>全班同學名冊
+                    </h3>
+
+                    <!-- Filter & Search Controls -->
+                    <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                        <div class="relative flex-1 md:w-64">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input type="text" id="member-search" oninput="filterMembers()" placeholder="搜尋姓名或專長/興趣..." class="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-teal-500">
+                        </div>
+                        <select id="group-filter" onchange="filterMembers()" class="px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-teal-500 bg-white">
+                            <option value="all">所有小組 (All Groups)</option>
+                            <option value="1">第一組 (Group 1)</option>
+                            <option value="2">第二組 (Group 2)</option>
+                            <option value="3">第三組 (Group 3)</option>
+                            <option value="4">第四組 (Group 4)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Member Cards Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="members-grid">
+                    <!-- Loaded dynamically by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: CLASS CALENDAR -->
+        <section id="section-calendar" class="hidden space-y-8">
+            <div class="border-l-4 border-teal-600 pl-4">
+                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800">班級行事曆</h2>
+                <p class="text-slate-500 text-sm mt-1">掌握護理一甲學術、考試與系上重大活動時程</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Interactive Calendar Widget -->
+                <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+                    <!-- Calendar Header -->
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-bold text-slate-800" id="calendar-month-year">2026 年 10 月</h3>
+                        <div class="flex space-x-2">
+                            <button onclick="changeMonth(-1)" class="p-2 rounded-lg border border-slate-200 hover:bg-slate-100"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button onclick="resetCalendar()" class="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 text-xs font-semibold">今天</button>
+                            <button onclick="changeMonth(1)" class="p-2 rounded-lg border border-slate-200 hover:bg-slate-100"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Days of Week Header -->
+                    <div class="grid grid-cols-7 text-center font-semibold text-slate-500 text-xs py-2 border-b border-slate-100">
+                        <span class="text-red-500">日</span>
+                        <span>一</span>
+                        <span>二</span>
+                        <span>三</span>
+                        <span>四</span>
+                        <span>五</span>
+                        <span class="text-sky-600">六</span>
+                    </div>
+
+                    <!-- Calendar Grid -->
+                    <div class="grid grid-cols-7 text-center gap-1 mt-2 text-sm" id="calendar-days">
+                        <!-- Days generated via JS -->
+                    </div>
+                </div>
+
+                <!-- Event Details & Personal Notes Panel -->
+                <div class="space-y-6">
+                    <!-- Selected Date Events -->
+                    <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+                        <h3 class="font-bold text-slate-800 mb-3 flex items-center">
+                            <i class="fa-solid fa-clock text-teal-600 mr-2"></i>當日預定行程
+                        </h3>
+                        <div id="selected-day-events" class="space-y-3">
+                            <p class="text-slate-400 text-sm italic">點擊日曆中的日期以檢視詳情。</p>
+                        </div>
+                    </div>
+
+                    <!-- Add Personal Memo -->
+                    <div class="bg-teal-50/60 rounded-2xl p-6 border border-teal-100">
+                        <h3 class="font-bold text-teal-900 mb-3 text-sm flex items-center">
+                            <i class="fa-solid fa-pen-to-square text-teal-700 mr-2"></i>新增私人/班級備忘記事
+                        </h3>
+                        <form onsubmit="addCalendarNote(event)" class="space-y-3">
+                            <input type="date" id="note-date" required class="w-full px-3 py-2 border border-teal-200 rounded-xl text-sm focus:outline-none focus:border-teal-500 bg-white">
+                            <input type="text" id="note-title" placeholder="記事事項 (例：期中考複習...)" required class="w-full px-3 py-2 border border-teal-200 rounded-xl text-sm focus:outline-none focus:border-teal-500 bg-white">
+                            <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 rounded-xl text-sm transition">
+                                新增至本機記事
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: ACTIVITIES & EVENTS -->
+        <section id="section-activities" class="hidden space-y-8">
+            <div class="border-l-4 border-teal-600 pl-4">
+                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800">系上與班級活動</h2>
+                <p class="text-slate-500 text-sm mt-1">記錄我們從護理新鮮人到邁向專業的精彩時刻</p>
+            </div>
+
+            <!-- Activity Tabs -->
+            <div class="flex flex-wrap gap-2 border-b border-slate-200 pb-3">
+                <button onclick="filterActivities('all')" class="act-tab px-4 py-2 rounded-xl text-sm font-semibold text-teal-700 bg-teal-100" id="act-tab-all">全部活動</button>
+                <button onclick="filterActivities('academic')" class="act-tab px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100" id="act-tab-academic">學術考照</button>
+                <button onclick="filterActivities('major')" class="act-tab px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100" id="act-tab-major">系上大事</button>
+                <button onclick="filterActivities('recreation')" class="act-tab px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100" id="act-tab-recreation">社團康樂</button>
+            </div>
+
+            <!-- Activity Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="activities-grid">
+                <!-- Dynamic Activity Cards loaded via JS -->
+            </div>
+        </section>
+
+        <!-- SECTION 5: MESSAGE BOARD & NURSING HUB -->
+        <section id="section-hub" class="hidden space-y-8">
+            <div class="border-l-4 border-teal-600 pl-4">
+                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800">互動留言板與護理小工具</h2>
+                <p class="text-slate-500 text-sm mt-1">同學打氣溫馨交流區 & 護理學習快易通</p>
+            </div>
+
+            <!-- Daily Nursing Quote Banner -->
+            <div class="bg-gradient-to-r from-sky-600 to-teal-600 rounded-2xl p-6 text-white shadow-sm flex items-center justify-between">
+                <div class="space-y-1">
+                    <span class="text-xs uppercase tracking-wider text-sky-200 font-semibold"><i class="fa-solid fa-quote-left mr-1"></i> 每日護理格言</span>
+                    <p class="text-base md:text-lg font-medium italic" id="daily-quote">「護理是給予關懷、勇氣與希望的過程。」</p>
+                </div>
+                <button onclick="nextQuote()" class="p-2.5 bg-white/20 hover:bg-white/30 rounded-xl transition text-sm">
+                    <i class="fa-solid fa-rotate"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Message Board (7 cols) -->
+                <div class="lg:col-span-7 bg-white rounded-2xl p-6 border border-slate-100 shadow-sm space-y-6">
+                    <h3 class="text-lg font-bold text-slate-800 flex items-center justify-between">
+                        <span><i class="fa-solid fa-comments text-teal-600 mr-2"></i>班級交流留言板</span>
+                        <span class="text-xs text-slate-400 font-normal">資料自動儲存於本機</span>
+                    </h3>
+
+                    <!-- Message Form -->
+                    <form onsubmit="postMessage(event)" class="space-y-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="text" id="msg-author" placeholder="您的姓名或暱稱" required class="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-teal-500 bg-white">
+                            <select id="msg-tag" class="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-teal-500 bg-white">
+                                <option value="鼓勵">💪 互相加油</option>
+                                <option value="課業">📚 課業討論</option>
+                                <option value="生活">☕ 生活隨筆</option>
+                            </select>
+                        </div>
+                        <textarea id="msg-content" rows="3" placeholder="寫下想對班上同學或老師說的話..." required class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-teal-500 bg-white"></textarea>
+                        <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 rounded-lg text-sm transition flex items-center justify-center">
+                            <i class="fa-solid fa-paper-plane mr-2"></i>發布留言
+                        </button>
+                    </form>
+
+                    <!-- Message List -->
+                    <div id="messages-list" class="space-y-3 max-h-[450px] overflow-y-auto custom-scrollbar pr-1">
+                        <!-- Loaded from LocalStorage or Default JS -->
+                    </div>
+                </div>
+
+                <!-- Nursing Tools (5 cols) -->
+                <div class="lg:col-span-5 space-y-6">
+                    <!-- Tool 1: Medical Terms Flashcards -->
+                    <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm space-y-4">
+                        <h3 class="font-bold text-slate-800 flex items-center">
+                            <i class="fa-solid fa-brain text-teal-600 mr-2"></i>護理常用單字快閃卡
+                        </h3>
+                        
+                        <div id="flashcard" onclick="flipCard()" class="cursor-pointer bg-teal-50 border-2 border-dashed border-teal-300 rounded-2xl p-8 text-center min-h-[160px] flex flex-col items-center justify-center transition-transform transform active:scale-95 shadow-inner">
+                            <span class="text-xs font-semibold text-teal-600 uppercase tracking-widest mb-1" id="card-category">醫療詞彙</span>
+                            <h4 class="text-2xl font-bold text-slate-800" id="card-term font-mono">vital signs</h4>
+                            <p class="text-sm text-slate-600 mt-2 font-medium hidden" id="card-meaning">生命徵象 (T, P, R, BP)</p>
+                            <span class="text-xs text-teal-500 mt-3"><i class="fa-solid fa-hand-pointer mr-1"></i>點擊翻面看答案</span>
+                        </div>
+
+                        <div class="flex justify-between items-center text-sm">
+                            <button onclick="prevCard()" class="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-100">上一張</button>
+                            <span class="text-xs text-slate-400" id="card-counter">1 / 5</span>
+                            <button onclick="nextCard()" class="px-3 py-1.5 bg-teal-600 text-white rounded-lg hover:bg-teal-700">下一張</button>
+                        </div>
+                    </div>
+
+                    <!-- Tool 2: Nursing Drip Rate Calculator -->
+                    <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm space-y-4">
+                        <h3 class="font-bold text-slate-800 flex items-center">
+                            <i class="fa-solid fa-calculator text-teal-600 mr-2"></i>臨床點滴流速/滴數計算機
+                        </h3>
+                        
+                        <div class="space-y-3 text-xs">
+                            <div>
+                                <label class="block text-slate-600 font-medium mb-1">輸液總量 (mL)</label>
+                                <input type="number" id="calc-volume" value="500" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-teal-500">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-slate-600 font-medium mb-1">輸注時間 (小時)</label>
+                                    <input type="number" id="calc-hours" value="4" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-teal-500">
+                                </div>
+                                <div>
+                                    <label class="block text-slate-600 font-medium mb-1">滴套規格 (gtt/mL)</label>
+                                    <select id="calc-factor" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-teal-500 bg-white">
+                                        <option value="20">一般滴套 (20 gtt/mL)</option>
+                                        <option value="60">微量滴套 (60 gtt/mL)</option>
+                                        <option value="15">舊式滴套 (15 gtt/mL)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button onclick="calculateDrip()" class="w-full bg-teal-700 text-white font-medium py-2 rounded-lg text-sm hover:bg-teal-800 transition">
+                                開始計算流速
+                            </button>
+                        </div>
+
+                        <div id="calc-result" class="hidden p-3 bg-teal-50 rounded-xl border border-teal-200 text-center">
+                            <span class="block text-xs text-teal-700">計算結果：</span>
+                            <span class="text-xl font-bold text-teal-900" id="result-gtt">42 gtt/min</span>
+                            <span class="block text-xs text-slate-500 mt-1" id="result-detail">(約每 1.4 秒 1 滴)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs space-y-2">
+            <p class="font-medium text-slate-300">護理系一年甲班 班級聯合自主維護網站 © 2026 Department of Nursing Class 1A</p>
+            <p class="text-slate-500">關懷 · 專業 · 利他 · 卓越 | 用愛心照顧每一個生命</p>
+        </div>
+    </footer>
+
+    <!-- Member Detail Modal -->
+    <div id="member-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl relative animate-fade-in">
+            <button onclick="closeMemberModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="modal-content">
+                <!-- Modal content dynamically injected -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Code -->
+    <script>
+        // --- DATA DEFINITIONS ---
+
+        // Officers Data
+        const officers = [
+            { role: '班長', name: '張家豪', desc: '全班總指揮、系務聯絡總窗口', icon: 'fa-user-tie' },
+            { role: '副班長', name: '李欣潔', desc: '點名考勤管理、協助班長', icon: 'fa-user-check' },
+            { role: '學藝股長', name: '王品涵', desc: '共筆整理、課程筆記彙整', icon: 'fa-book-open' },
+            { role: '活動股長', name: '林宇軒', desc: '迎新、系烤、班聚籌備', icon: 'fa-champagne-glasses' },
+            { role: '總務股長', name: '陳美玲', desc: '班會費收支管理與統計', icon: 'fa-coins' },
+            { role: '體育股長', name: '許文傑', desc: '系運動會、體育競賽報名', icon: 'fa-volleyball' }
+        ];
+
+        // Class Members Data
+        const members = [
+            { id: 1, group: 1, name: '張家豪', role: '班長', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200', interest: '急診重症、籃球', wish: '希望順利取得急救證照並帶領一甲團結！' },
+            { id: 2, group: 1, name: '李欣潔', role: '副班長', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=200', interest: '兒科護理、彈吉他', wish: '願大家護理學導論都能高分過關～' },
+            { id: 3, group: 1, name: '王品涵', role: '學藝股長', avatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=200', interest: '解剖學研究、閱讀', wish: '希望能產出高質量的課業共筆幫助全班！' },
+            { id: 4, group: 2, name: '林宇軒', role: '活動股長', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=200', interest: '熱舞、活動主持', wish: '把一甲的所有活動都辦得超精彩！' },
+            { id: 5, group: 2, name: '陳美玲', role: '總務股長', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200', interest: '手帳紀錄、烹飪', wish: '希望大家準時繳交班費不欠帳XD' },
+            { id: 6, group: 2, name: '許文傑', role: '體育股長', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200', interest: '羽球、健身', wish: '奪下系運動會總冠軍！' },
+            { id: 7, group: 3, name: '郭雅婷', role: '組員', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200', interest: '社區護理、志工服務', wish: '期許自己成為有溫度的護理師。' },
+            { id: 8, group: 3, name: '趙子豪', role: '組員', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200', interest: '手術室護理、電競', wish: '解剖實習實驗不要手抖！' },
+            { id: 9, group: 4, name: '黃心怡', role: '組員', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200', interest: '心理衛生護理、攝影', wish: '與大家建立一輩子的深刻友誼。' },
+            { id: 10, group: 4, name: '楊啟明', role: '組員', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=200', interest: '中醫護理、游泳', wish: '期末考全過，Pass 不退路！' }
+        ];
+
+        // Calendar Events
+        const calendarEvents = {
+            '2026-10-12': [{ title: 'CPR & AED 考照講習', type: 'academic', desc: '上午09:00 體育館集會' }],
+            '2026-10-18': [{ title: '系迎新烤肉晚會', type: 'recreation', desc: '下午17:30 學校大草皮' }],
+            '2026-10-25': [{ title: '護理學導論 期中報告繳交', type: 'academic', desc: '線上平台截止 23:59' }],
+            '2026-11-05': [{ title: '解剖學實習參訪', type: 'major', desc: '醫學院二館解剖實驗室' }],
+            '2026-11-20': [{ title: '系運動會預賽', type: 'recreation', desc: '操場與羽球館' }]
+        };
+
+        // Activities Data
+        const activities = [
+            {
+                id: 1,
+                category: 'major',
+                title: '護理加冠典禮預備說明會',
+                date: '2026-09-20',
+                location: '國際會議廳',
+                img: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=500',
+                desc: '介紹加冠典禮的核心意義，傳承南丁格爾燭光精神，預備迈向專業護理的第一步。'
+            },
+            {
+                id: 2,
+                category: 'academic',
+                title: 'CPR & AED 急救考照訓練',
+                date: '2026-10-12',
+                location: '急救模擬教室',
+                img: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=500',
+                desc: '邀請急救醫學專家現場指導安妮急救技巧與AED的操作，全員取得合格證書。'
+            },
+            {
+                id: 3,
+                category: 'recreation',
+                title: '護理一甲迎新烤肉晚會',
+                date: '2026-10-18',
+                location: '校園露營烤肉區',
+                img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&q=80&w=500',
+                desc: '破冰遊戲、團康活動與美味烤肉，促進班上同學與學長姐之間的感情凝聚。'
+            }
+        ];
+
+        // Flashcards Data
+        const flashcards = [
+            { term: 'vital signs (V/S)', meaning: '生命徵象 (包含體溫、脈搏、呼吸、血壓)', cat: '基礎護理' },
+            { term: 'NPO (Nothing by mouth)', meaning: '禁食 (禁禁食水)', cat: '醫囑縮寫' },
+            { term: 'qd (quaque die)', meaning: '每日一次', cat: '給藥頻率' },
+            { term: 'Stat (Statim)', meaning: '立即 (立即執行)', cat: '醫囑時效' },
+            { term: 'Triage', meaning: '檢傷分類', cat: '急診護理' }
+        ];
+
+        // Daily Quotes
+        const quotes = [
+            "「護理是給予關懷、勇氣與希望的過程。」",
+            "「南丁格爾的光芒，在每一位護理人的心中閃耀。」",
+            "「用心聽，用愛護，護理是世界上最溫柔的專業。」",
+            "「每一次細心的照護，都是對生命最美好的尊崇。」"
+        ];
+
+        // Current Calendar State
+        let currentYear = 2026;
+        let currentMonth = 9; // 0-indexed (9 = Oct)
+        let currentCardIndex = 0;
+        let currentQuoteIndex = 0;
+
+        // --- CORE FUNCTIONS ---
+
+        // Tab Switch Logic
+        function switchTab(tabId) {
+            const sections = ['home', 'members', 'calendar', 'activities', 'hub'];
+            sections.forEach(s => {
+                document.getElementById(`section-${s}`).classList.add('hidden');
+                const btn = document.getElementById(`nav-${s}`);
+                if (btn) {
+                    btn.classList.remove('text-teal-700', 'bg-teal-50');
+                    btn.classList.add('text-slate-600');
+                }
+            });
+
+            document.getElementById(`section-${tabId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('text-teal-700', 'bg-teal-50');
+                activeBtn.classList.remove('text-slate-600');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Render Officers & Members
+        function renderMembers() {
+            // Render Officers
+            const officerBox = document.getElementById('officers-container');
+            officerBox.innerHTML = officers.map(o => `
+                <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm text-center hover:shadow-md transition">
+                    <div class="w-10 h-10 mx-auto rounded-full bg-teal-100 text-teal-700 flex items-center justify-center mb-2">
+                        <i class="fa-solid ${o.icon}"></i>
+                    </div>
+                    <span class="text-xs bg-teal-50 text-teal-700 font-semibold px-2 py-0.5 rounded-full">${o.role}</span>
+                    <h4 class="font-bold text-slate-800 text-sm mt-1">${o.name}</h4>
+                    <p class="text-[11px] text-slate-400 mt-1">${o.desc}</p>
+                </div>
+            `).join('');
+
+            filterMembers();
+        }
+
+        function filterMembers() {
+            const query = document.getElementById('member-search').value.toLowerCase();
+            const groupVal = document.getElementById('group-filter').value;
+
+            const filtered = members.filter(m => {
+                const matchSearch = m.name.toLowerCase().includes(query) || m.interest.toLowerCase().includes(query) || m.wish.toLowerCase().includes(query);
+                const matchGroup = groupVal === 'all' || m.group.toString() === groupVal;
+                return matchSearch && matchGroup;
+            });
+
+            const grid = document.getElementById('members-grid');
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-8 text-slate-400 text-sm">未找到符合條件的同學。</div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(m => `
+                <div onclick="openMemberModal(${m.id})" class="bg-slate-50 hover:bg-white p-4 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition cursor-pointer flex items-center space-x-3 group">
+                    <img src="${m.avatar}" alt="${m.name}" class="w-12 h-12 rounded-full object-cover border-2 border-teal-500">
+                    <div class="overflow-hidden">
+                        <div class="flex items-center space-x-2">
+                            <h4 class="font-bold text-slate-800 group-hover:text-teal-600 transition truncate">${m.name}</h4>
+                            <span class="text-[10px] bg-slate-200 text-slate-700 px-1.5 py-0.2 rounded">${m.group}組</span>
+                        </div>
+                        <p class="text-xs text-slate-500 truncate mt-0.5"><i class="fa-solid fa-heart-pulse text-teal-500 mr-1"></i>${m.interest}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openMemberModal(id) {
+            const m = members.find(item => item.id === id);
+            if (!m) return;
+
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <div class="text-center space-y-3">
+                    <img src="${m.avatar}" alt="${m.name}" class="w-24 h-24 rounded-full mx-auto object-cover border-4 border-teal-500 shadow-md">
+                    <div>
+                        <span class="text-xs font-semibold px-2.5 py-1 bg-teal-100 text-teal-800 rounded-full">第 ${m.group} 組 · ${m.role}</span>
+                        <h3 class="text-2xl font-bold text-slate-800 mt-2">${m.name}</h3>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl text-left text-xs space-y-2 border border-slate-100">
+                        <p class="text-slate-600"><strong><i class="fa-solid fa-star text-amber-400 mr-1"></i>專長/興趣：</strong> ${m.interest}</p>
+                        <p class="text-slate-600"><strong><i class="fa-solid fa-bullseye text-teal-600 mr-1"></i>未來展望/寄語：</strong> ${m.wish}</p>
+                    </div>
+                    <button onclick="closeMemberModal()" class="w-full bg-teal-600 text-white font-medium py-2 rounded-xl text-sm hover:bg-teal-700 transition">關閉</button>
+                </div>
+            `;
+            document.getElementById('member-modal').classList.remove('hidden');
+        }
+
+        function closeMemberModal() {
+            document.getElementById('member-modal').classList.add('hidden');
+        }
+
+        // --- CALENDAR LOGIC ---
+        function renderCalendar() {
+            const monthYearLabel = document.getElementById('calendar-month-year');
+            const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+            monthYearLabel.innerText = `${currentYear} 年 ${months[currentMonth]}`;
+
+            const daysGrid = document.getElementById('calendar-days');
+            daysGrid.innerHTML = '';
+
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            // Blank padding for prior month
+            for (let i = 0; i < firstDay; i++) {
+                daysGrid.innerHTML += `<div class="p-2 text-slate-300"></div>`;
+            }
+
+            // Days rendering
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const hasEvent = calendarEvents[dateStr] || getLocalNotes(dateStr).length > 0;
+
+                daysGrid.innerHTML += `
+                    <div onclick="selectDate('${dateStr}')" class="p-2 border rounded-xl hover:bg-teal-50 cursor-pointer transition flex flex-col items-center justify-between min-h-[48px] ${hasEvent ? 'border-teal-400 bg-teal-50/40 font-bold' : 'border-slate-100'}">
+                        <span class="text-xs text-slate-700">${d}</span>
+                        ${hasEvent ? '<span class="w-2 h-2 rounded-full bg-teal-600 mb-1"></span>' : ''}
+                    </div>
+                `;
+            }
+        }
+
+        function changeMonth(delta) {
+            currentMonth += delta;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            } else if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendar();
+        }
+
+        function resetCalendar() {
+            currentYear = 2026;
+            currentMonth = 9;
+            renderCalendar();
+        }
+
+        function selectDate(dateStr) {
+            const container = document.getElementById('selected-day-events');
+            const events = calendarEvents[dateStr] || [];
+            const localNotes = getLocalNotes(dateStr);
+
+            if (events.length === 0 && localNotes.length === 0) {
+                container.innerHTML = `<p class="text-slate-400 text-sm italic">${dateStr} 目前無預定事項。</p>`;
+                return;
+            }
+
+            let html = `<div class="text-xs font-semibold text-teal-800 mb-2">${dateStr} 日程紀錄：</div>`;
+            events.forEach(e => {
+                html += `
+                    <div class="p-2.5 rounded-lg bg-teal-50 border border-teal-100 text-xs">
+                        <span class="font-bold text-teal-900">${e.title}</span>
+                        <p class="text-slate-500 mt-0.5">${e.desc}</p>
+                    </div>
+                `;
+            });
+            localNotes.forEach(n => {
+                html += `
+                    <div class="p-2.5 rounded-lg bg-sky-50 border border-sky-100 text-xs">
+                        <span class="font-bold text-sky-900">[私人/班級記事] ${n}</span>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function addCalendarNote(e) {
+            e.preventDefault();
+            const date = document.getElementById('note-date').value;
+            const title = document.getElementById('note-title').value;
+
+            if (!date || !title) return;
+
+            const existing = getLocalNotes(date);
+            existing.push(title);
+            localStorage.setItem(`note_${date}`, JSON.stringify(existing));
+
+            document.getElementById('note-title').value = '';
+            renderCalendar();
+            selectDate(date);
+            alert('記事已成功儲存！');
+        }
+
+        function getLocalNotes(dateStr) {
+            const stored = localStorage.getItem(`note_${dateStr}`);
+            return stored ? JSON.parse(stored) : [];
+        }
+
+        // --- ACTIVITIES LOGIC ---
+        function renderActivities(category = 'all') {
+            const grid = document.getElementById('activities-grid');
+            const filtered = category === 'all' ? activities : activities.filter(a => a.category === category);
+
+            grid.innerHTML = filtered.map(a => `
+                <div class="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-md transition flex flex-col">
+                    <img src="${a.img}" alt="${a.title}" class="w-full h-44 object-cover">
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
+                        <div>
+                            <div class="flex items-center justify-between text-xs text-slate-400 mb-2">
+                                <span><i class="fa-regular fa-calendar mr-1"></i>${a.date}</span>
+                                <span><i class="fa-solid fa-location-dot mr-1"></i>${a.location}</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-base leading-snug">${a.title}</h4>
+                            <p class="text-xs text-slate-500 mt-2 line-clamp-3 leading-relaxed">${a.desc}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterActivities(cat) {
+            document.querySelectorAll('.act-tab').forEach(btn => {
+                btn.classList.remove('text-teal-700', 'bg-teal-100');
+                btn.classList.add('text-slate-600');
+            });
+            const activeBtn = document.getElementById(`act-tab-${cat}`);
+            if (activeBtn) {
+                activeBtn.classList.add('text-teal-700', 'bg-teal-100');
+                activeBtn.classList.remove('text-slate-600');
+            }
+            renderActivities(cat);
+        }
+
+        // --- MESSAGE BOARD & HUB TOOLS ---
+        function postMessage(e) {
+            e.preventDefault();
+            const author = document.getElementById('msg-author').value;
+            const tag = document.getElementById('msg-tag').value;
+            const content = document.getElementById('msg-content').value;
+
+            const newMsg = { author, tag, content, time: new Date().toLocaleDateString() };
+            const msgs = getStoredMessages();
+            msgs.unshift(newMsg);
+
+            localStorage.setItem('class_messages', JSON.stringify(msgs));
+            document.getElementById('msg-content').value = '';
+            renderMessages();
+        }
+
+        function getStoredMessages() {
+            const defaultMsgs = [
+                { author: '班長 家豪', tag: '鼓勵', content: '護理一甲加油！大家考照訓練都要一次順利通過！', time: '2026-10-06' },
+                { author: '導師 林靜怡', tag: '課業', content: '同學們期中報告有問題歡迎隨時前來辦公室討論喔～', time: '2026-10-04' }
+            ];
+            const stored = localStorage.getItem('class_messages');
+            return stored ? JSON.parse(stored) : defaultMsgs;
+        }
+
+        function renderMessages() {
+            const container = document.getElementById('messages-list');
+            const msgs = getStoredMessages();
+
+            container.innerHTML = msgs.map(m => `
+                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="font-bold text-slate-800">${m.author}</span>
+                        <span class="text-slate-400">${m.time}</span>
+                    </div>
+                    <span class="inline-block text-[10px] font-semibold px-2 py-0.5 rounded bg-teal-100 text-teal-800">${m.tag}</span>
+                    <p class="text-xs text-slate-600 pt-1 leading-relaxed">${m.content}</p>
+                </div>
+            `).join('');
+        }
+
+        // Flashcards Logic
+        function updateCard() {
+            const card = flashcards[currentCardIndex];
+            document.getElementById('card-category').innerText = card.cat;
+            document.getElementById('card-term font-mono').innerText = card.term;
+            document.getElementById('card-meaning').innerText = card.meaning;
+            document.getElementById('card-meaning').classList.add('hidden');
+            document.getElementById('card-counter').innerText = `${currentCardIndex + 1} / ${flashcards.length}`;
+        }
+
+        function flipCard() {
+            document.getElementById('card-meaning').classList.toggle('hidden');
+        }
+
+        function nextCard() {
+            currentCardIndex = (currentCardIndex + 1) % flashcards.length;
+            updateCard();
+        }
+
+        function prevCard() {
+            currentCardIndex = (currentCardIndex - 1 + flashcards.length) % flashcards.length;
+            updateCard();
+        }
+
+        // Calculator Logic
+        function calculateDrip() {
+            const vol = parseFloat(document.getElementById('calc-volume').value);
+            const hrs = parseFloat(document.getElementById('calc-hours').value);
+            const factor = parseFloat(document.getElementById('calc-factor').value);
+
+            if (!vol || !hrs || hrs <= 0) return;
+
+            const totalMins = hrs * 60;
+            const gttPerMin = Math.round((vol * factor) / totalMins);
+            const secPerDrop = ((60 / gttPerMin)).toFixed(1);
+
+            document.getElementById('result-gtt').innerText = `${gttPerMin} gtt/min`;
+            document.getElementById('result-detail').innerText = `(約每 ${secPerDrop} 秒 1 滴)`;
+            document.getElementById('calc-result').classList.remove('hidden');
+        }
+
+        function nextQuote() {
+            currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
+            document.getElementById('daily-quote').innerText = quotes[currentQuoteIndex];
+        }
+
+        // --- INITIALIZATION ---
+        window.onload = function() {
+            renderMembers();
+            renderCalendar();
+            renderActivities();
+            renderMessages();
+            updateCard();
+        };
+    </script>
+</body>
+</html>
